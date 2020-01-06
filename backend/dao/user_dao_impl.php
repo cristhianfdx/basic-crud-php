@@ -25,10 +25,11 @@ class UserDaoImpl implements UserDao
             $insert->bindValue('name', $user->getName());
             $insert->bindValue('email', $user->getEmail());
             $insert->execute();
-            echo json_encode(array("msg" => "created"));
+            $connection = null;
+            return json_encode(array("msg" => "created"));
         }
 
-        $connection->close();
+        return null;
     }
 
     public function getUsers()
@@ -40,7 +41,7 @@ class UserDaoImpl implements UserDao
             $users = array();
             $i = 0;
 
-            $results = $this->connection->query($query);
+            $results = $connection->query($query);
             //En caso de que la consulta falle
             if (!$results) {
                 die("Error en la consulta");
@@ -52,7 +53,7 @@ class UserDaoImpl implements UserDao
             };
 
             $results = null;
-            $connection->close();
+            $connection = null;
             return json_encode($users);
         }
     }

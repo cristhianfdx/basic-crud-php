@@ -2,15 +2,17 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('#form');
-
-  const url = 'http://localhost/www/crud-php/backend/controllers/front_controller.php';
+  const url = 'backend/controllers/front_controller.php';
   let isEdit = false; // Verifica si el usuario se va a editar
 
   /*------------------------------------------------
    * Interfaz gráfica
    *------------------------------------------------*/
 
+   const initApp = () => getUsers();
+
   // Mostrar mensaje en pantalla usando boostrap
+
   const renderMessage = (message, color, seconds) => {
     const div = document.createElement('div');
     div.className = `alert alert-${color} message`;
@@ -25,7 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }, seconds);
   };
 
-  const drawTable = () => {};
+
+  const drawTable = data => {
+    let template = '';
+
+    data.forEach(user => {
+      template += `
+        <tr user_id='${user.id}'>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <button class='btn btn-sm btn-danger delete'>Eliminar</button>
+            <button class='btn btn-sm btn-info edit'>Editar</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    document.querySelector('#data').innerHTML = template;
+  };
 
   /*-------------------------------------------------------
    * Envío de datos al servidor
@@ -54,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(dataResponse => {
           if (dataResponse.msg === 'created') {
             renderMessage('Usuario creado', 'success', 3000);
+            form.reset();
+            getUsers();
           }
         })
         .catch(error => {
@@ -68,4 +90,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   form.addEventListener('submit', postUser);
+
+  /*-------------------------------------------------------
+   * Obtener de datos del servidor
+   *------------------------------------------------------*/
+
+  const getUsers = () => {
+    fetch(`${url}?action=users&method=get-users`)
+      .then(res => res.json())
+      .then(data => {
+        drawTable(data);
+      });
+  };
+
+  initApp();
 });

@@ -14,7 +14,7 @@ class UserController
 
     public function user_get()
     {
-        $this->userDao->getUsers();
+        echo $this->userDao->getUsers();
     }
 
     public function user_post($user)
@@ -23,6 +23,6 @@ class UserController
         $userVO->setName($user['name']);
         $userVO->setEmail($user['email']);
 
-        $this->userDao->saveUser($userVO);
+        echo $this->userDao->saveUser($userVO);
     }
 }
